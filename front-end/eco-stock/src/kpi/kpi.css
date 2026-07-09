@@ -1,0 +1,98 @@
+.kpiCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.kpiCards .kpiCard {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(16, 20, 26, 0.03); /* Ombre plus douce et moderne conforme au SaaS Premium */
+  transition: all 0.3s ease;
+  border: 1px solid #E1E6E1; /* Alignement sur la couleur de bordure de ta maquette html */
+}
+
+.kpiCards .kpiCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(16, 20, 26, 0.06);
+}
+
+/* --- HEADER ZONE (Icon & Trend Badge) --- */
+.kpiCards .kpiCard .kpiHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.kpiCards .kpiCard .kpiHeader .kpiIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Suppression de la couleur blanche forcée pour laisser passer la couleur dynamique du composant React */
+.kpiCards .kpiCard .kpiHeader .kpiIconWrapper svg {
+  width: 18px;
+  height: 18px;
+}
+
+.kpiCards .kpiCard .kpiHeader .kpiTrend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800; /* Plus épais pour l'aspect dashboard professionnel */
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+/* Remplacement des rgba de couleurs natives CSS (qui provoquaient des bugs) par des couleurs Hex et alpha valides */
+.kpiCards .kpiCard .kpiHeader .kpiTrend.up {
+  color: #0FA968;
+  background: rgba(15, 169, 104, 0.1);
+}
+
+.kpiCards .kpiCard .kpiHeader .kpiTrend.down {
+  color: #EF4438;
+  background: rgba(239, 68, 56, 0.1);
+}
+
+/* --- BODY ZONE (Values & Metadata Texts) --- */
+.kpiCards .kpiCard .kpiBody {
+  display: flex;
+  flex-direction: column; /* CORRECTION CRITIQUE : Aligne les textes verticalement au lieu de les écraser sur une ligne */
+  align-items: flex-start;
+  gap: 2px; /* Espacement fluide standardisé entre les lignes de texte */
+}
+
+.kpiCards .kpiCard .kpiBody .kpiValue {
+  font-size: 28px;
+  font-weight: 900; /* Inter Black pour correspondre au design de l'application */
+  color: #10141A; /* Couleur de texte sombre principale */
+  margin: 0;
+  line-height: 1.1;
+  tracking-tight: -0.03em;
+}
+
+.kpiCards .kpiCard .kpiBody .kpiTitle {
+  font-size: 13px;
+  color: #5C665F; /* Couleur de texte secondaire (soft) */
+  margin: 0;
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.kpiCards .kpiCard .kpiBody .kpiSubtitle {
+  font-size: 11px;
+  color: #96A099; /* Couleur de texte atténuée (faint) */
+  margin-top: 4px;
+  display: block;
+  font-weight: 500;
+}
