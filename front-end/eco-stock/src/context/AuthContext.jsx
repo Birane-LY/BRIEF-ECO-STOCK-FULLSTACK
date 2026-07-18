@@ -1,45 +1,46 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants/constant";
 
-// Initialize the Authentication Context
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Stores logged in user metadata
   const navigate = useNavigate();
 
-  // Handles mock authentication state changes
-  const login = (email) => {
-    // Extract username prefix from professional email for profile display
-    const username = email.split("@")[0];
-    
-    setUser({
-      name: username,
-      role: "Admin",
-      avatar: username.charAt(0).toUpperCase()
-    });
-    
-    navigate("/"); // Redirect to Overview page upon successful login
-  };
+  const [user, setUser] = useState(() => localStorage.getItem("USER_NAME") || null);
+  const [isAuthorized, setIsAuthorized] = useState(() => !!localStorage.getItem(ACCESS_TOKEN));
 
-  // Clears user session states and redirects to public login screen
-  const logout = () => {
+  const login = useCallback((username, tokens) => {
+    const cleanUser = username.includes("@") ? username.split("@")[0] : username;
+    
+    localStorage.setItem("USER_NAME", cleanUser);
+    if (tokens?.access) localStorage.setItem(ACCESS_TOKEN, tokens.access);
+    if (tokens?.refresh) localStorage.setItem(REFRESH_TOKEN, tokens.refresh);
+
+    setUser(cleanUser);
+    setIsAuthorized(true);
+    navigate("/", { replace: true });
+  }, [navigate]);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem(ACCESS_TOKEN);
+    localStorage.removeItem(REFRESH_TOKEN);
+    localStorage.removeItem("USER_NAME");
+    
     setUser(null);
-    navigate("/login");
-  };
+    setIsAuthorized(false);
+    navigate("/login", { replace: true });
+  }, [navigate]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, isAuthorized }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom fallback hook for easy context usage across components
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
 };
